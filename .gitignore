@@ -1,5 +1,11 @@
+# dataset
 dataset/
-.DS_Store
-.venv
+data/
+
+# IDE
 .idea
 .vscode
+
+# others
+.venv
+.DS_Store
