@@ -14,12 +14,7 @@ https://github.com/chuklee/army.git
 Dans ce journal de bord, nous allons expliqué les différentes étapes de notre travail au fil des jours.  
 
 ## Jour 1:
-Répartition des tâches :
-  - Statistique sur les données
-  - Création du model en pytorch
-  - Recherche sur l'explicabilité + matrice de confusion
-  - Recherche sur les hyperparamètres
-  
+
 ### Statistique sur les données
 
 #### Répartition des classes
@@ -109,8 +104,6 @@ Nous avons découvert différentes techniques d'explicabilité :
   - Occlusion : cette méthode implique la modification de parties de l'image d'entrée pour évaluer l'impact sur la sortie du modèle.
   - Grad-CAM et CAM (Classe Activation Mapping) : génèrent des cartes de chaleur pour visualiser les régions importantes de l'image qui ont contribué à la prédiction de classe du modèle.
 
-Nous avons décidé d'utiliser la librairie Captum pour l'occlusion et la librairie Torch-Cam pour le Grad-Cam
-
 Sources:
  - https://medium.com/@mariusvadeika/captum-model-interpretability-for-pytorch-c630fadfc6be 
  - https://github.com/frgfm/torch-cam
@@ -149,15 +142,15 @@ Sources:
 
 ### Choix des hyperparamètres
 
-- Taille de Batch : Pour l'instant 32 est conservé car les performances obtenues sont satisfaisantes et permettent un temps d'entraînement acceptable. Ce paramètre sera peut-être changé par la suite avec l'utilisation de optuna.
+- Taille de Batch : Pour l'instant `32` est conservé car les performances obtenues sont satisfaisantes et permettent un temps d'entraînement acceptable. Ce paramètre sera peut-être changé par la suite avec l'utilisation de optuna.
 
 - Learning rate : En utilisant `0.0001` avec Adam, nous obtenions de meilleurs résultats comparé à `0.001`.
 
-- Optimizer : Nous avons décidé d'employer 'Adam' pour nos premiers modèles car il s'agissait du plus récent et de celui avec lequel nous étions le plus familier. 
+- Optimizer : Nous avons décidé d'employer `Adam` pour nos premiers modèles car il s'agissait du plus récent et de celui avec lequel nous étions le plus familier. 
 
 - Poids des classes : l'utilisation des poids n'a au final pas été adopté car nous avons remarqué que les classes étaient équilibrés entre elles. Cela entrainait également un problème au niveau de l'entrainement du modèle.
 
-- Normalisation : nous avons utilisé la normalisation [0.5,0.5,0.5] à la suite d'une discussion avec un coach
+- Normalisation : nous avons utilisé la normalisation `[0.5,0.5,0.5]` à la suite d'une discussion avec un coach.
 
 - Augmentation des données : nous avons conservé `HorizontalFlip`, `RandomRotation` car ils donnent de meilleurs résultats. Cependant, nous n'utiliserons pas `AutoAugmentation(ImageNet)` car celui-ci détruit les performances du modèle en introduisant beaucoup trop de bruits (baisse l'accuracy sur test à 10%).
 
@@ -170,15 +163,34 @@ Nous avons réussi à entraîner un modèle avec une accuracy de 0.88 sur le tes
 
 ## Jour 2:
 
-### Modification des hyperparamètres
-- Optimizer: nous avons décidé de passer à 'SGD' puisque celui-ci obtient de meilleurs performances que 'Adam' (90% d'accuracy sur le dataset de test pour SGD contre 88% pour Adam avec les mêmes paramètres puis 92% avec des améliorations)
-  
-- Learning rate : avec le passage à SGD, nous avons changé le learning rate et utilisons à présent '0.01', ce qui est plus adapté au nouvel optimizer.
-  
-- Dimensions de l'image : Changer la taille de l'image influence nos résultats. Passer à une taille supérieure à 224 (valeur conseillée par la librairie de resnet18) nous permet d'augmenter notre accuracy sur les données de tests. Cela peut être justifié par des valeurs plus proches de la taille moyenne des images et donc moins de pertes et de modifications des informations. Après plusieurs tests, le redimensionnement de 512*512 donne les meilleurs résultats.
+### Troisième version du modèle
 
-- Taille du dataset de train/ du dataset de test: nous avons décidé de passer à un ratio 80%/20% plutôt que 50%/50% pour permettre à notre modèle d'avoir plus de données pour s'entraîner et donc plus de cas différents à voir. Cela nous a permis de passer de 90% d'accuracy à 92% d'accuracy sur le dataset de test.
+#### Modification des hyperparamètres
+- Optimizer: nous avons décidé de passer à `SGD` puisque celui-ci obtient de meilleurs performances que `Adam` (90% d'accuracy sur le dataset de test pour SGD contre 88% pour Adam avec les mêmes paramètres puis 92% avec des améliorations)
+  
+- Learning rate : avec le passage à SGD, nous avons changé le learning rate et utilisons à présent `0.01`, ce qui est plus adapté au nouvel optimizer.
+  
+- Dimensions de l'image : Changer la taille de l'image influence nos résultats. Passer à une taille supérieure à `224` (valeur conseillée par la librairie de resnet18) nous permet d'augmenter notre accuracy sur les données de tests. Cela peut être justifié par des valeurs plus proches de la taille moyenne des images et donc moins de pertes et de modifications des informations. Après plusieurs tests, le redimensionnement de `512*512` donne les meilleurs résultats.
 
-### Explicabilité
-Nous avons commencé à chercher à expliqué les performances de notre model et comment nous pourions améliorer celui-ci.
-Nous avons choisi de regarder l'occlusion et le Grad-Cam pour les images qui était mal détécté par le modèle. Les images mal détectés étaient dans la catégorie des Audi.
+- Taille du dataset de train/ du dataset de test: nous avons décidé de passer à un ratio `80% / 20%` plutôt que `50% / 50%` pour permettre à notre modèle d'avoir plus de données pour s'entraîner et donc plus de cas différents à voir. Cela nous a permis de passer de 90% d'accuracy à 92% d'accuracy sur le dataset de test.
+
+#### Résultats
+Le modèle a atteint une accuracy de 92% sur le test. Les performances du modèle ont été grandement améliorées mais l'étude des résultats permet de constater des pistes d'amélioration supplémentaires.
+
+### Etude des résultats
+
+#### Matrice de confusion
+Pour évaluer les performances de notre modèle, la matrice de confusion peut être un très bon outil. En revanche, le dataset étant composé de 196 classes, il est très difficile de l'exploiter. Cela nous permet cependant de visualiser le bon fonctionnement du modèle sur la majorité des images grâce à la diagonale.
+
+Pour remédier à ce problème, nous l'avons séparé en multiple sous-groupes en groupant les catégories qui étaient le plus confus entre elles. Cela permet d'obtenir des sous-matrices de taille 5*5 par exemple et de pouvoir se concentrer sur ces 5 classes qui posent problèmes. Ce zoom nous permet donc de constater que les classes les plus souvent confondues entre elles sont celles avec des modèles de voitures assez semblables entre eux. Cela comprend les voitures d'une même marque ou d'un même modèle mais d'années différentes (les Audi par exemple).
+
+#### Explicabilité
+Nous avons pu ensuite utiliser l'explicabilité pour approfondir un peu plus les résultats obtenus par la matrice de confusion. Suite aux recherches réalisées durant le jour 1, nous avons sélectionné deux outils: la librairie Captum pour l'occlusion et la librairie Torch-Cam pour le Grad-Cam.
+
+##### Occlusion
+
+Cette librairie nous permet de constater les zones de l'images qui ont permi d'impacter le plus la décision de notre modèle. Nous pouvons ainsi constater que notre modèle ne semble pas être énormément impacté par le paysage ou par ce qui entoure les voitures et se concentre majoritairement sur la silhouette du véhicule pour faire ses choix.
+
+##### GradCam
+
+### Amélioration du modèle
