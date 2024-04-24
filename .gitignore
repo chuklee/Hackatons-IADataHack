@@ -1,6 +1,8 @@
 # dataset
 dataset/
 data/
+cm.csv
+*.png
 
 # IDE
 .idea
@@ -9,3 +11,4 @@ data/
 # others
 .venv
 .DS_Store
+runs/
