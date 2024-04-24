@@ -81,27 +81,29 @@ Afin d'améliorer les performances du modèle, nous avons décidé d'utiliser un
 ##### Résultats
 Le modèle a atteint une accuracy de 0.98 sur le train et de 0.88 sur le test. Les performances du modèle ont été grandement améliorées. Nous remarquons néanmoins qu'une divergence commence à apparaitre entre les performances du train et du tes, ce qui peut indiquer un overfit du modèle.
 ### Recherche explicabilité
-Nous avons débuté des recherches sur l'explicabilité afin de savoir en quoi cela consitait et quelles librairies était disponible.
+Nous avons débuté des recherches sur l'explicabilité afin de comprendre en quoi cela consistait et quelles bibliothèques étaient disponibles.
 
-Lors de ces recherches, nous avons trouvé plusieurs librairies disponibles pour les modèles pytorch:
+Lors de ces recherches, nous avons trouvé plusieurs bibliothèques disponibles pour les modèles PyTorch :
   - SHAP (SHapley Additive exPlanations)
   - Captum
   - Torch-Cam qui permet un visualisation avec la génération des cartes d'activations.
+  - Lime
 
-Nous avons trouvé différente technique d'explicabilité:
-  - SHAP : basée sur la théorie des jeux, permet de mesurer l’impact sur la prédiction d’ajouter une variable (toutes choses égales par ailleurs) grâce à des permutations de toutes les options possibles.
+Nous avons découvert différentes techniques d'explicabilité :
+  - SHAP : basée sur la théorie des jeux, permet de mesurer l’impact sur la prédiction d’ajouter une variable grâce à des permutations de toutes les options possibles.
   - Lime (Local Interpretable Model-agnostic Explanations): explique les prédictions des modèles en ajustant un modèle interprétable local autour de l'instance à expliquer.
   - Occlusion : cette méthode implique la modification de parties de l'image d'entrée pour évaluer l'impact sur la sortie du modèle.
-  - Grad-CAM et CAM (Classe Activation Mapping) : 
+  - Grad-CAM et CAM (Classe Activation Mapping) : génèrent des cartes de chaleur pour visualiser les régions importantes de l'image qui ont contribué à la prédiction de classe du modèle.
 
-Nous avons commencé par utilisé la Captum, mais nous avons trouvé cette librairie trop complexe pour la tâche que nous devions exécuté. Nous avons donc décidé d'utilisé la librairie Torch-Cam.
+Nous avons décidé d'utiliser la librairie Captum pour l'occlusion et la librairie Torch-Cam pour le Grad-Cam
 
 Sources:
  - https://medium.com/@mariusvadeika/captum-model-interpretability-for-pytorch-c630fadfc6be 
  - https://github.com/frgfm/torch-cam
  - https://github.com/pytorch/captum 
  - https://indabaxmorocco.github.io/materials/hajji_slides.pdf
- - https://aqsone.com/blog/articlescientifique/interpretabilite-et-explicabilite-des-modeles-de-machine-learning/ 
+ - https://aqsone.com/blog/articlescientifique/interpretabilite-et-explicabilite-des-modeles-de-machine-learning/
+ - https://courses.minnalearn.com/en/courses/trustworthy-ai/preview/explainability/types-of-explainable-ai/
  
 ### Recherche sur les hyperparamètres
 
