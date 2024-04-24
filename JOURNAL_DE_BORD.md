@@ -14,3 +14,9 @@ Nous avons constaté que les classes n'étaient pas équilibrées et que les ima
 Après un premier lancement, nous constatons un overfitting de notre premier model sur les donnéees de train. Des modifications des hyperparamètres sont prévues pour régler ce problème.
 
 Le nombre élévé de classes rend difficile la lecture de la matrice de confusion. Nous planifions de la split en plusieurs parties pour résoudre ce problème.
+
+Etude des données :
+
+Recherches sur l'explicabilité :
+
+Création des modèles :
