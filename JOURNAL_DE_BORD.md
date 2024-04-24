@@ -90,7 +90,7 @@ Lors de ces recherches, nous avons trouvé plusieurs bibliothèques disponibles 
   - Lime
 
 Nous avons découvert différentes techniques d'explicabilité :
-  - SHAP : basée sur la théorie des jeux, permet de mesurer l’impact sur la prédiction d’ajouter une variable (toutes choses égales par ailleurs) grâce à des permutations de toutes les options possibles.
+  - SHAP : basée sur la théorie des jeux, permet de mesurer l’impact sur la prédiction d’ajouter une variable grâce à des permutations de toutes les options possibles.
   - Lime (Local Interpretable Model-agnostic Explanations): explique les prédictions des modèles en ajustant un modèle interprétable local autour de l'instance à expliquer.
   - Occlusion : cette méthode implique la modification de parties de l'image d'entrée pour évaluer l'impact sur la sortie du modèle.
   - Grad-CAM et CAM (Classe Activation Mapping) : génèrent des cartes de chaleur pour visualiser les régions importantes de l'image qui ont contribué à la prédiction de classe du modèle.
@@ -103,7 +103,7 @@ Sources:
  - https://github.com/pytorch/captum 
  - https://indabaxmorocco.github.io/materials/hajji_slides.pdf
  - https://aqsone.com/blog/articlescientifique/interpretabilite-et-explicabilite-des-modeles-de-machine-learning/
- - https://courses.minnalearn.com/en/courses/trustworthy-ai/preview/explainability/types-of-explainable-ai/ 
+ - https://courses.minnalearn.com/en/courses/trustworthy-ai/preview/explainability/types-of-explainable-ai/
  
 ### Recherche sur les hyperparamètres
 
