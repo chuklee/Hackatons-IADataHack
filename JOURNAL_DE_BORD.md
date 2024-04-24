@@ -180,17 +180,41 @@ Le modèle a atteint une accuracy de 92% sur le test. Les performances du modèl
 ### Etude des résultats
 
 #### Matrice de confusion
-Pour évaluer les performances de notre modèle, la matrice de confusion peut être un très bon outil. En revanche, le dataset étant composé de 196 classes, il est très difficile de l'exploiter. Cela nous permet cependant de visualiser le bon fonctionnement du modèle sur la majorité des images grâce à la diagonale.
 
-Pour remédier à ce problème, nous l'avons séparé en multiple sous-groupes en groupant les catégories qui étaient le plus confus entre elles. Cela permet d'obtenir des sous-matrices de taille 5*5 par exemple et de pouvoir se concentrer sur ces 5 classes qui posent problèmes. Ce zoom nous permet donc de constater que les classes les plus souvent confondues entre elles sont celles avec des modèles de voitures assez semblables entre eux. Cela comprend les voitures d'une même marque ou d'un même modèle mais d'années différentes (les Audi par exemple).
+![alt text](images/cm_beauty.png)
+
+Pour évaluer les performances de notre modèle, la matrice de confusion peut être un très bon outil. En revanche, le dataset étant composé de 196 classes, il est très difficile de l'exploiter. Cela nous permet cependant de visualiser le bon fonctionnement du modèle sur la majorité des classes grâce à la diagonale.
+
+![alt text](images/cm_chevrolet2.png)
+![alt text](images/cm_sub_dodge3.png)
+
+Pour remédier à ce problème, nous l'avons séparé en multiple sous-groupes en groupant les catégories qui étaient le plus confus entre elles. Cela permet d'obtenir des sous-matrices de taille 5*5 par exemple et de pouvoir se concentrer sur ces 5 classes qui posent problèmes. Ce zoom nous permet donc de constater que les classes les plus souvent confondues entre elles sont celles avec des modèles de voitures assez semblables entre eux. Cela comprend les voitures d'une même marque ou d'un même modèle mais d'années différentes. On peut citer l'ensemble de la marque Audi qui possède des voitures assez similaires entre modèle et au sein d'un même modèle.
 
 #### Explicabilité
 Nous avons pu ensuite utiliser l'explicabilité pour approfondir un peu plus les résultats obtenus par la matrice de confusion. Suite aux recherches réalisées durant le jour 1, nous avons sélectionné deux outils: la librairie Captum pour l'occlusion et la librairie Torch-Cam pour le Grad-Cam.
 
+Nous avons décidé d'utiliser Grad-Cam et non pas Smooth Grad-Cam pour éviter l'impacte de la seed présente dans l'utilisation de la deuxième fonction. Cette seed créait bien trop de bruit dans les résultats et impactait donc notre étude de ceux-ci en donnant un résultat parfois totalement différent sur la même image avec le même modèle.
+
+![alt text](images/explicabilite_audi.png)
+
 ##### Occlusion
 
-Cette librairie nous permet de constater les zones de l'images qui ont permi d'impacter le plus la décision de notre modèle. Nous pouvons ainsi constater que notre modèle ne semble pas être énormément impacté par le paysage ou par ce qui entoure les voitures et se concentre majoritairement sur la silhouette du véhicule pour faire ses choix.
+Cette librairie nous permet de constater les zones de l'images qui ont permis d'impacter le plus la décision de notre modèle. Nous pouvons ainsi constater que notre modèle ne semble pas être énormément impacté par le paysage ou par ce qui entoure les voitures et se concentre majoritairement sur la silhouette du véhicule pour faire ses choix.
 
 ##### GradCam
 
-### Amélioration du modèle
+Gradcam nous permet d'obtenir des informations bien plus intéressantes puisque nous pouvons ainsi voir les zones sur lesquelles se concentre notre modèle pour trouver ses caractéristiques.
+
+Si nous reprenons notre exemple des Audi, c'est ainsi que nous pouvons nous rendre compte que le problème avec ces classes vient de la zone observée : notre modèle se concentre principalement sur l'avant de la voiture lorsque celui-ci est visible et, plus particulièrement, sur le logo de la marque. Or, la plupart des voitures de cette marque possèdent un avant et un logo similaire (celui de la marque). Avec principalement cette caractéristique, il est donc normal d'avoir beaucoup de confusion au sein de ces classes.
+
+### Quatrième version du modèle
+
+Constater d'où venait le problème pour les classes avec le plus de confusion est intéressant mais ne change pas grand chose tel quel. Nous pouvons cependant utiliser ces nouvelles connaissances pour améliorer notre modèle.
+
+La suite des modifications se passent donc après un premier passage du modèle général et se concentrent sur les classes ayant le plus de confusion entre elles (et le plus de similarité). 
+
+Dans un premier temps, nous allons ajouter quelques cas supplémentaires dans notre base de donnée d'entraînement.
+
+Pour réaliser cette étape, nous allons réutiliser les données obtenues à l'aide de GradCam: la zone désignée comme la plus regardée par le modèle va être floutée pour environ 50% de nos données et ainsi forcer le modèle à trouver de nouvelles caractéristiques distinctes parmi ces classes.
+
+Le modèle est ensuite réentrainé pour ces classes similaires avec ce nouveau dataset.
