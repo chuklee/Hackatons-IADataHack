@@ -1,4 +1,14 @@
-# JOURNAL DE BORD
+# JOURNAL DE BORD Hackathon 2024 : Challenge 6milarité
+
+## Equipe 4:
+- Florine Kieraga (EPITA)
+- Eliana Junker (EPITA)
+- Martin Natale (EPITA)
+- Eithan Nakache (EPITA)
+- Sacha Hibon (EPITA)
+  
+## Lien GitHub
+https://github.com/chuklee/army.git 
 
 ## Introduction:
 Dans ce journal de bord, nous allons expliqué les différentes étapes de notre travail au fil des jours.  
@@ -111,9 +121,9 @@ Sources:
  
 ### Recherche sur les hyperparamètres
 
-Afin d'améliorer les performances de notre modèle nous avons décidé de faire une recherche sur les hyperparamètres suivants :
+Tout au long de la création de nos deux versions de modèle, nous avons décidé de faire les recherches et comparaisons suivantes sur les hyperparamètres :
 
-- Batch size : Le batch size représente le nombre d'échantillons qui seront propagés à travers le réseau de neurones. Nous avions décidé d'explorer les batch sizes suivants : `16`, `32`, `64`, `128`.
+- Taille de batch : Le batch size représente le nombre d'échantillons qui seront propagés à travers le réseau de neurones. Nous avions décidé d'explorer les batch sizes suivants : `16`, `32`, `64`, `128`.
 
 - Learning rate : Le learning rate, car il était crucial de déterminer le taux d'apprentissage optimal pour la convergence du modèle. Les valeurs que nous avions décidé d'explorer étaient : `0.0001` et `0.001` .
 
@@ -125,9 +135,9 @@ Afin d'améliorer les performances de notre modèle nous avons décidé de faire
 
 - Normalisation : La normalisation des données est une étape importante pour l'entraînement du modèle. Nous avions décidé d'explorer les normalisations suivantes : `None`, `ImageNet`, `Z-score`.
 
-- Data augmentation : Nous avions décidé de mener une recherche sur la data augmentation, car il était important de trouver la data augmentation qui permettrait au modèle de converger. Nous avions choisi d'explorer les data augmentations suivantes : `None`, `HorizontalFlip`, `VerticalFlip`, `RandomRotation` , `AutoAugmentation(ImageNet)`.
+- Augmentation des données : Nous avions décidé de mener une recherche sur la data augmentation, car il était important de trouver la data augmentation qui permettrait au modèle de converger. Nous avions choisi d'explorer les data augmentations suivantes : `None`, `HorizontalFlip`, `VerticalFlip`, `RandomRotation` , `AutoAugmentation(ImageNet)`.
 
-- Image Shape : Nous avions décidé de mener une recherche sur l'image shape, car il était important de trouver la bonne forme d'image pour que le modèle converge. Nous avions choisi d'explorer les formes d'image suivantes : `224`, `256`, `512`, `672`.
+- Dimension des images : Nous avions décidé de mener une recherche sur l'image shape, car il était important de trouver la bonne forme d'image pour que le modèle converge. Nous avions choisi d'explorer les formes d'image suivantes : `224`, `256`, `416`, `512`.
 
 Sources: 
 - https://optuna.readthedocs.io/en/stable/index.html
@@ -137,27 +147,37 @@ Sources:
 - https://pytorch.org/vision/stable/models.html
 - https://pytorch.org/docs/stable/nn.html
 
-### Résultats des hyperparamètres
+### Choix des hyperparamètres
 
-- Learning rate : `0.0001` avec Adam, on obtenait de meilleur resultat comparé à `0.001`. 
+- Taille de Batch : Pour l'instant 32 est conservé car les performances obtenues sont satisfaisantes et permettent un temps d'entraînement acceptable. Ce paramètre sera peut-être changé par la suite avec l'utilisation de optuna.
 
-- Poids des classes : l'utilisation des poids n'a pas été adopté car nous avons remarqué que les classes étaient équilibrés entre elles. Cela entrainait également un problème au niveau de l'entrainement du modèle.
+- Learning rate : En utilisant `0.0001` avec Adam, nous obtenions de meilleurs résultats comparé à `0.001`.
 
-- Normalisation : nous avons utilisé la normalisation [0.5,0.5,0.5]
+- Optimizer : Nous avons décidé d'employer 'Adam' pour nos premiers modèles car il s'agissait du plus récent et de celui avec lequel nous étions le plus familier. 
 
-- Data augmentation : `HorizontalFlip`, `RandomRotation`: nous gardons ceux-ci car ils donnent de meilleurs résultats  mais nous n'utiliserons pas `AutoAugmentation(ImageNet)` car celui-ci détruit les performances du modèle (baisse l'accuracy sur test à 10%).
+- Poids des classes : l'utilisation des poids n'a au final pas été adopté car nous avons remarqué que les classes étaient équilibrés entre elles. Cela entrainait également un problème au niveau de l'entrainement du modèle.
+
+- Normalisation : nous avons utilisé la normalisation [0.5,0.5,0.5] à la suite d'une discussion avec un coach
+
+- Augmentation des données : nous avons conservé `HorizontalFlip`, `RandomRotation` car ils donnent de meilleurs résultats. Cependant, nous n'utiliserons pas `AutoAugmentation(ImageNet)` car celui-ci détruit les performances du modèle en introduisant beaucoup trop de bruits (baisse l'accuracy sur test à 10%).
+
+- Scheduler : nous avons pour l'instant décidé de conserver`ReduceLROnPlateau` qui nous fourni des résultats satisfaisants.
+
+- Dimension des images : Nous avons pour l'instant conservé la taille conseillée par la librairie resnet18 (224*224).
 
 ### Conclusion de la journée
-Nous avons réussi à entraîner un modèle avec une accuracy de 0.88 sur le test. Nous avons également commencé à explorer les différentes méthodes d'explicabilité pour comprendre comment notre modèle prend ses décisions. Nous avons également commencé à explorer les hyperparamètres pour améliorer les performances de notre modèle. Nous sommes globalement satisfaits de notre journée et nous avons hâte de continuer à explorer les différentes méthodes d'explicabilité et d'optimisation de notre modèle.
+Nous avons réussi à entraîner un modèle avec une accuracy de 0.88 sur le test et nous avons commencé à explorer les différentes méthodes d'explicabilité pour comprendre comment notre modèle prend ses décisions. Nous avons également commencé à explorer les hyperparamètres pour améliorer les performances de notre modèle. Nous sommes globalement satisfaits de notre journée et nous avons hâte de continuer à explorer les différentes méthodes d'explicabilité et d'optimisation de notre modèle.
 
 ## Jour 2:
 
-### Résulats sur les hyperparamètres
-- Batch size : Le batch size représente le nombre d'échantillons qui seront propagés à travers le réseau de neurones. Nous avions décidé d'explorer les batch sizes suivants : `16`, `32`, `64`, `128`.
-- Optimizer : Le choix de l'optimizer est crucial pour la convergence du modèle. Il permet de mettre à jour les poids du réseau de neurones. Nous avions décidé d'explorer les optimizers suivants : `Adam`, `SGD`.
-- Scheduler : Le scheduler permet de modifier le learning rate au cours de l'entraînement. Nous avions décidé d'explorer les schedulers suivants : `StepLR`, `ReduceLROnPlateau`.
+### Modification des hyperparamètres
+- Optimizer: nous avons décidé de passer à 'SGD' puisque celui-ci obtient de meilleurs performances que 'Adam' (90% d'accuracy sur le dataset de test pour SGD contre 88% pour Adam avec les mêmes paramètres puis 92% avec des améliorations)
+  
+- Learning rate : avec le passage à SGD, nous avons changé le learning rate et utilisons à présent '0.01', ce qui est plus adapté au nouvel optimizer.
+  
+- Dimensions de l'image : Changer la taille de l'image influence nos résultats. Passer à une taille supérieure à 224 (valeur conseillée par la librairie de resnet18) nous permet d'augmenter notre accuracy sur les données de tests. Cela peut être justifié par des valeurs plus proches de la taille moyenne des images et donc moins de pertes et de modifications des informations. Après plusieurs tests, le redimensionnement de 512*512 donne les meilleurs résultats.
 
-- Image Shape : Nous avions décidé de mener une recherche sur l'image shape, car il était important de trouver la bonne forme d'image pour que le modèle converge. Nous avions choisi d'explorer les formes d'image suivantes : `224`, `256`, `512`, `672`.
+- Taille du dataset de train/ du dataset de test: nous avons décidé de passer à un ratio 80%/20% plutôt que 50%/50% pour permettre à notre modèle d'avoir plus de données pour s'entraîner et donc plus de cas différents à voir. Cela nous a permis de passer de 90% d'accuracy à 92% d'accuracy sur le dataset de test.
 
 ### Explicabilité
 Nous avons commencé à chercher à expliqué les performances de notre model et comment nous pourions améliorer celui-ci.
