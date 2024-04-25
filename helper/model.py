@@ -142,13 +142,14 @@ class MyModel:
         os.makedirs(dir_path, exist_ok=True)
 
         classes_path = os.path.join(dir_path, "classes.csv")
-        pd.DataFrame(self.classes, columns=["classes"]).to_csv(classes_path, index=False)
+        pd.DataFrame(self.classes, columns=["classes"]).to_csv(
+            classes_path, index=False
+        )
         print(f"classes saved in : '{classes_path}'")
 
         model_path = os.path.join(dir_path, "model.pth")
         torch.save(self.model.state_dict(), model_path)
         print(f"model saved in : '{model_path}'")
-
 
     @staticmethod
     def load(dir_path: str) -> "MyModel":
