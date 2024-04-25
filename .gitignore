@@ -9,6 +9,7 @@ cm.csv
 .vscode
 
 # others
+__pycache__
 .venv
 .DS_Store
 runs/
