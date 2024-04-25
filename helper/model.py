@@ -1,6 +1,8 @@
 import time
 from typing import List, Tuple
 
+import os
+import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
@@ -14,22 +16,23 @@ class MyModel:
 
     def __init__(
         self,
-        nb_classes: int,
-        device: torch.device,
+        classes: List[str],
         leaning_rate: float = 0.01,
         momentum: float = 0.9,
         mode: str = "max",
         patience: int = 3,
         threshold: float = 0.9,
     ):
-        self.nb_classes = nb_classes
+        self.classes = classes
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print("device used for the model :", device)
         self.device = device
 
         # load resnet pretrain dataset
         self.model = models.resnet18(pretrained=True)
 
         # changement du dernier layer
-        self.model.fc = nn.Linear(self.model.fc.in_features, self.nb_classes)
+        self.model.fc = nn.Linear(self.model.fc.in_features, len(self.classes))
         self.model = self.model.to(device)
 
         # loss function, optimizer and scheduler defintion
@@ -134,3 +137,40 @@ class MyModel:
                 predicted_labels.extend(predicted.cpu().numpy())
 
         return true_labels, predicted_labels
+
+    def save(self, dir_path: str) -> None:
+        os.makedirs(dir_path, exist_ok=True)
+
+        classes_path = os.path.join(dir_path, "classes.csv")
+        pd.DataFrame(self.classes, columns=["classes"]).to_csv(classes_path, index=False)
+        print(f"classes saved in : '{classes_path}'")
+
+        model_path = os.path.join(dir_path, "model.pth")
+        torch.save(self.model.state_dict(), model_path)
+        print(f"model saved in : '{model_path}'")
+
+
+    @staticmethod
+    def load(dir_path: str) -> "MyModel":
+        # load classes
+        classes_path = os.path.join(dir_path, "classes.csv")
+        classes = pd.read_csv(classes_path)
+        classes = list(classes["classes"])
+        print(f"classes loaded in : '{classes_path}'")
+        print("Number of classes :", len(classes))
+
+        # load model
+        my_model = MyModel(classes)
+
+        model_path = os.path.join(dir_path, "model.pth")
+        my_model.model.load_state_dict(torch.load(model_path))
+        my_model.model.eval()  # Evaluation Mode
+        print(f"model loaded in : '{model_path}'")
+
+        return my_model
+
+
+if __name__ == "__main__":
+    model = MyModel(["A", "B", "C"])
+    model.save("toto")
+    model.load("toto")
