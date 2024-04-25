@@ -1,7 +1,8 @@
 import os
 import shutil
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
+from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
@@ -92,3 +93,53 @@ def get_dataset_loader(
     )
 
     return len(train_dataset.classes), train_loader, test_loader
+
+
+def create_unbalenced_dataset(
+    src_path_dataset: str, dst_path_dataset: str, test_size: float
+) -> None:
+    if os.path.exists(dst_path_dataset):
+        shutil.rmtree(dst_path_dataset)
+
+    categories = os.listdir(os.path.join(src_path_dataset, "train"))
+    paths_by_categories: Dict[str, List[str]] = {
+        category: [] for category in categories
+    }
+
+    for var in ["train", "test"]:
+        for category in categories:
+            dir = os.path.join(src_path_dataset, var, category)
+            paths = [os.path.join(dir, file) for file in os.listdir(dir)]
+            paths_by_categories[category].extend(paths)
+
+    paths_train_test_by_categories: Dict[str, Tuple[List[str], List[str]]] = {}
+    for category, paths in paths_by_categories.items():
+        train, test = train_test_split(paths, test_size=test_size)
+        paths_train_test_by_categories[category] = (train, test)
+
+    for category, train_test in paths_train_test_by_categories.items():
+        train, test = train_test
+
+        train_path = os.path.join(dst_path_dataset, "train", category)
+        test_path = os.path.join(dst_path_dataset, "test", category)
+
+        os.makedirs(train_path, exist_ok=True)
+        os.makedirs(test_path, exist_ok=True)
+
+        for path in train:
+            try:
+                os.link(path, os.path.join(train_path, path.split("/")[-1]))
+            except:
+                continue
+
+        for path in test:
+            try:
+                os.link(path, os.path.join(test_path, path.split("/")[-1]))
+            except:
+                continue
+
+
+if __name__ == "__main__":
+    create_unbalenced_dataset(
+        "../dataset/car_data/car_data", "../dataset/sub_car_data/car_data", 0.2
+    )
