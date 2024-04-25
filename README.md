@@ -16,3 +16,10 @@
   - entrainement.ipynb : permet de créer et entraîner notre modèle (le générique sur les données d'origine ou le spécifique sur les classes spécifiées (pour cela, passer use_subset à True))
   - evaluation_model.ipynb : permet de voir les études des résultats sur un modèle spécifique (matrice de confusion et explicabilité)
 - helper : contient toutes les fonctions pythons implémentées par nos soins et utilisées par les notebooks
+
+## Tester avec différents dataset
+
+Si vous voulez jouer un peu avec nos modèles, vous pouvez lancer les fichiers python
+'blur_transformation.py' et 'chargement_donnee.py' dans helper qui créeront respectivement des datasets. Un qui ajoutera des données floutées, l'autre qui créera un dataset réparti tel que 80% train 20 test.
+
+Une fois les dataset créés, vous avez seulement à exécuter une nouvelle fois le notebook 'entraînenement' et 'evaluation_model' pour comparer les performances.

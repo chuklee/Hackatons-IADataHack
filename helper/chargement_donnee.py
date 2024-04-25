@@ -140,6 +140,8 @@ def create_unbalenced_dataset(
 
 
 if __name__ == "__main__":
+    # create a dataset 'dataset/car_data_80_20' (train 80%, test 20%)
+    print("Dataset 'dataset/car_data_80_20/car_data' created")
     create_unbalenced_dataset(
-        "../dataset/car_data/car_data", "../dataset/sub_car_data/car_data", 0.2
+        "../dataset/car_data/car_data", "../dataset/car_data_80_20/car_data", 0.2
     )

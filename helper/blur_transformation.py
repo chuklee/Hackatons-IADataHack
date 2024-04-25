@@ -119,6 +119,8 @@ def process_images_in_folder(
 
 
 if __name__ == "__main__":
+    # Add blur images in the dataset according to the our model confusion
+    print("Add blur images in 'dataset/car_data'")
     classes = pd.read_csv("../dataset/names.csv", names=["name"])
     model = MyModel(list(classes.name))
     path_dataset = os.path.abspath("../dataset/car_data/car_data/train")
