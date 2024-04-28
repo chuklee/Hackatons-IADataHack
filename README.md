@@ -1,4 +1,4 @@
-# Hackathon 2024 : Challenge 6milarité
+# Hackathon 2024 : Challenge 6milarité (Gagnant de la session 2024)
 
 ## Auteurs:
 - Florine Kieraga
